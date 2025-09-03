@@ -1,15 +1,28 @@
 import React, { useState } from "react";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
+type CardProps = {
+  label: string;
+  isSelected: boolean;
+  onPress: () => void;
+};
+
+const Card = ({ label, isSelected, onPress }: CardProps) => (
+  <TouchableOpacity
+    style={[styles.box, isSelected && styles.selectedBox]}
+    onPress={onPress}
+  >
+    <Text style={[styles.boxText, isSelected && styles.selectedBoxText]}>
+      {label}
+    </Text>
+  </TouchableOpacity>
+);
+
 export default function HomeScreen() {
   const [selectedBox, setSelectedBox] = useState<number | null>(null);
 
   const handlePress = (index: number) => {
-    if (selectedBox === index) {
-      setSelectedBox(null);
-    } else {
-      setSelectedBox(index);
-    }
+    setSelectedBox(selectedBox === index ? null : index);
   };
 
   const cards = ["Tarjeta 1", "Tarjeta 2", "Tarjeta 3"];
@@ -17,22 +30,14 @@ export default function HomeScreen() {
   return (
     <View style={styles.container}>
 
-      {cards.map((label, index) => {
-        const isSelected = selectedBox === index;
-        return (
-          <TouchableOpacity
-            key={index}
-            style={[styles.box, isSelected && styles.selectedBox]}
-            onPress={() => handlePress(index)}
-          >
-            <Text
-              style={[styles.boxText, isSelected && styles.selectedBoxText]}
-            >
-              {label}
-            </Text>
-          </TouchableOpacity>
-        );
-      })}
+      {cards.map((label, index) => (
+        <Card
+          key={index}
+          label={label} 
+          isSelected={selectedBox === index} 
+          onPress={() => handlePress(index)} 
+        />
+      ))}
     </View>
   );
 }
